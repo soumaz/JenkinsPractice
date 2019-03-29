@@ -6,6 +6,11 @@ pipeline {
         sh 'bash ./jenkins/scripts/prepare-image.sh'
       }
     }
+    stage('Clean Pruned Images/ Shell Script') {
+      steps {
+        sh 'bash ./jenkins/scripts/cleanup-images.sh'
+      }
+    }
   }
   environment {
     HOME = '.'

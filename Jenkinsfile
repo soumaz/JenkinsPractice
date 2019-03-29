@@ -19,6 +19,15 @@ pipeline {
     stage('Run Container Local') {
       steps {
         sh 'bash ./jenkins/scripts/run-container.sh'
+        sh 'bash ./jenkins/scripts/cleanup-containers.sh'
+        input(message: 'Is the cleanup done', ok: 'Yes')
+      }
+    }
+    stage('AWS Deploy/Extended Email') {
+      steps {
+        emailext(subject: '${JOBNAME} - $BUILD_ID} - Approval Task', body: 'The pipeline for  ${JOB_NAME} has been completed pre proccessing task successfully, needs to be approved befor eits being eployed to AWS environment. To continue approval click <a href=\'{BUILD_URL}\'>here</a>', from: 'soumaz07@gmail.com')
+        input(message: 'Would you like to continue deploy ro AW ECS Cluster', ok: 'Yes. Please!')
+        sh 'bash ./jenkins/scripts/aws-deploy.sh'
       }
     }
   }
